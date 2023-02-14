@@ -13,6 +13,12 @@ struct Node
     Node *next;
 
     Node(int v, Node* n) : val(v), next(n) {}
+
+    /* This would solve some potential problems, but I dont know if intended
+    ~Node(){
+        delete next;
+    }
+    */
 };
 
 
@@ -77,12 +83,13 @@ Node* llfilter(Node* head, Comp pred);
 // implement the above function now.
 //*****************************************************************************
 
+//*********************************************
+// Provide your implementation below
+//*********************************************
 template <typename Comp>
 Node* llfilter(Node* head, Comp pred)
 {
-    //*********************************************
-    // Provide your implementation below
-    //*********************************************
+
 
 
 }
