@@ -4,10 +4,10 @@
 // Provide your implementation of llpivot below
 //*********************************************
 
-Node* llpivot_helper(Node* &curr, Node* &smaller, Node* &larger, int pivot)
+void llpivot_helper(Node* &curr, Node* &smaller, Node* &larger, int pivot)
 {
   if (curr == nullptr){
-    return curr;}
+    return;}
 
   if (curr->val <= pivot)
   {
@@ -19,7 +19,7 @@ Node* llpivot_helper(Node* &curr, Node* &smaller, Node* &larger, int pivot)
   {
     //is larger empty or not?
     larger = curr;
-    llpivot_helper(curr->next, smaller->next, larger, pivot);
+    llpivot_helper(curr->next, smaller, larger->next, pivot);
   }
   curr->next = nullptr;
 }
@@ -34,11 +34,12 @@ void lldeteter(Node*&currNode)
 void llpivot(Node* &head, Node* &smaller, Node* &larger, int pivot)
 {
   //remove garbage from smaller and larger
-    lldeteter(smaller);
-    lldeteter(larger);
-  
+  smaller = nullptr;
+  larger = nulllptr;
 
   //call helper
+  llpivot_helper(head, smaller, larger, pivot);
 
-
+  //remove the original linked list
+  head = nullptr;
 }

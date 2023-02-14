@@ -14,11 +14,6 @@ struct Node
 
     Node(int v, Node* n) : val(v), next(n) {}
 
-    /* This would solve some potential problems, but I dont know if intended
-    ~Node(){
-        delete next;
-    }
-    */
 };
 
 
@@ -89,7 +84,21 @@ Node* llfilter(Node* head, Comp pred);
 template <typename Comp>
 Node* llfilter(Node* head, Comp pred)
 {
-
+    if (head == nullptr)
+    {
+        return nullptr;
+    }
+    if ( !pred(head->val) )
+    { //Node should be kept
+        llfilter(head->next, pred);
+        return head;
+    }
+    else
+    { //Node should be removed
+        Node* nextNode = llfilter(head->next, pred);
+        delete head;
+        return nextNode;
+    }
 
 
 }
