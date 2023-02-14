@@ -4,37 +4,24 @@
 // Provide your implementation of llpivot below
 //*********************************************
 
-void llpivot_helper(Node* &curr, Node* &smaller, Node* &larger, int pivot)
+Node* llpivot_helper(Node* &curr, Node* &smaller, Node* &larger, int pivot)
 {
   if (curr == nullptr){
-    return;}
+    return curr;}
 
   if (curr->val <= pivot)
   {
     //is smaller empty or not?
-    if (smaller == nullptr)
-    {
-      smaller = curr;
-    }
-    else
-    {
-      
-    }
-    
+    smaller = curr;
+    llpivot_helper(curr->next, smaller->next, larger, pivot);
   }
   else
   {
     //is larger empty or not?
     larger = curr;
-
-    larger->next = curr; 
+    llpivot_helper(curr->next, smaller->next, larger, pivot);
   }
-  
-  llpivot_helper(curr->next, smaller->next, larger, pivot);
   curr->next = nullptr;
-
-
-  
 }
 
 void lldeteter(Node*&currNode)
