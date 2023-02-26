@@ -113,49 +113,69 @@ void Heap<T,PComparator>::pop()
 
   while (true)
   {
-    bool leftExists = ( loc * 2 - 1 < size() );
-    bool rightExists = ( loc * 2 < size() );
+    std::size_t tempLoc = loc;
+    for (int i = m_ary; i >= 1; i--)
+    {
+      std::size_t childInd = tempLoc * i;
+      std::size_t currInd = tempLoc - 1;
+      if (childInd < size() && 
+          m_comp(m_data[childInd], m_data[currInd]))
+      {
+        std::swap(m_data[childInd], m_data[currInd]);
+        loc = childInd + 1;
+      }
+    }
+    if (tempLoc == loc)
+    {
+      break;
+    }
+
+    /*
+
+    bool leftExists = ( loc * m_ary - 1 < size() );
+    bool rightExists = ( loc * m_ary < size() );
 
     //messy logic but it works
 
     //if current node is weighed better than both children, were done
     if ( !leftExists || (
       rightExists 
-        && m_comp(m_data[loc - 1], m_data[loc * 2 - 1]) 
-        && m_comp(m_data[loc - 1], m_data[loc * 2]) ) )
+        && m_comp(m_data[loc - 1], m_data[loc * m_ary - 1]) 
+        && m_comp(m_data[loc - 1], m_data[loc * m_ary]) ) )
     {
       break;
     }
     //assert(leftExists);
 
     //if both children exist and are better
-    if (rightExists && !m_comp(m_data[loc - 1], m_data[loc * 2 - 1]) && !m_comp(m_data[loc - 1], m_data[loc * 2]))
+    if (rightExists && !m_comp(m_data[loc - 1], m_data[loc * m_ary - 1]) && !m_comp(m_data[loc - 1], m_data[loc * m_ary]))
     {
-      if (m_comp(m_data[loc * 2 - 1], m_data[loc * 2]))
+      if (m_comp(m_data[loc * m_ary - 1], m_data[loc * m_ary]))
       {
-        std::swap(m_data[loc * 2 - 1], m_data[loc - 1]);
-        loc = loc * 2;
+        std::swap(m_data[loc * m_ary - 1], m_data[loc - 1]);
+        loc = loc * m_ary;
       }
       else
       {
-        std::swap(m_data[loc * 2], m_data[loc - 1]);
-        loc = loc * 2 + 1;
+        std::swap(m_data[loc * m_ary], m_data[loc - 1]);
+        loc = loc * m_ary + 1;
       }
     }
-    else if (rightExists && !m_comp(m_data[loc - 1], m_data[loc * 2]))
+    else if (rightExists && !m_comp(m_data[loc - 1], m_data[loc * m_ary]))
     {
-      std::swap(m_data[loc * 2], m_data[loc - 1]);
-      loc = loc * 2+ 1;
+      std::swap(m_data[loc * m_ary], m_data[loc - 1]);
+      loc = loc * m_ary+ 1;
     }
-    else if (leftExists && !m_comp(m_data[loc - 1], m_data[loc * 2 - 1]))
+    else if (leftExists && !m_comp(m_data[loc - 1], m_data[loc * m_ary - 1]))
     {
-      std::swap(m_data[loc * 2 - 1], m_data[loc - 1]);
-      loc = loc * 2;
+      std::swap(m_data[loc * m_ary - 1], m_data[loc - 1]);
+      loc = loc * m_ary;
     }
     else
     {// both children are worse or do not exist
       break;
     }
+    */
   }
 }
 
@@ -168,22 +188,21 @@ void Heap<T, PComparator>::push(const T& item)
   //trickle new item up
   while (loc > 1)
   {
-    if (m_comp(m_data[loc - 1], m_data[(loc/2) - 1]))
+    if (m_comp(m_data[loc - 1], m_data[(loc/m_ary) - 1]))
     {
-      std::swap(m_data[loc - 1], m_data[(loc/2) - 1]);
-      loc = loc/2;
+      std::swap(m_data[loc - 1], m_data[(loc/m_ary) - 1]);
+      loc = loc/m_ary;
 
       //if another child exists and is better, swap with that child
-      if (loc * 2 < size())
+      for (int i = m_ary; i >= 1; i--)
       {
-          if (m_comp(m_data[loc * 2 - 1], m_data[loc - 1]))
+        if (loc * i < size())
+        {
+          if (m_comp(m_data[loc * i], m_data[loc - 1]))
           {
-              std::swap(m_data[loc - 1], m_data[loc * 2 - 1]);
+            std::swap(m_data[loc - 1], m_data[loc * i]);
           }
-          else if (m_comp(m_data[loc * 2], m_data[loc - 1]))
-          {
-              std::swap(m_data[loc - 1], m_data[loc * 2]);
-          }
+        }
       }
     }
     else{ break; }
