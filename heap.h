@@ -120,7 +120,9 @@ void Heap<T,PComparator>::pop()
 
     //if current node is weighed better than both children, were done
     if ( !leftExists || (
-      rightExists && m_comp(m_data[loc - 1], m_data[loc * 2 - 1]) && m_comp(m_data[loc - 1], m_data[loc * 2])) )
+      rightExists 
+        && m_comp(m_data[loc - 1], m_data[loc * 2 - 1]) 
+        && m_comp(m_data[loc - 1], m_data[loc * 2]) ) )
     {
       break;
     }
@@ -132,23 +134,23 @@ void Heap<T,PComparator>::pop()
       if (m_comp(m_data[loc * 2 - 1], m_data[loc * 2]))
       {
         std::swap(m_data[loc * 2 - 1], m_data[loc - 1]);
-        loc = loc * 2 - 1;
+        loc = loc * 2;
       }
       else
       {
         std::swap(m_data[loc * 2], m_data[loc - 1]);
-        loc = loc * 2;
+        loc = loc * 2 + 1;
       }
     }
     else if (rightExists && !m_comp(m_data[loc - 1], m_data[loc * 2]))
     {
       std::swap(m_data[loc * 2], m_data[loc - 1]);
-      loc = loc * 2;
+      loc = loc * 2+ 1;
     }
     else if (leftExists && !m_comp(m_data[loc - 1], m_data[loc * 2 - 1]))
     {
       std::swap(m_data[loc * 2 - 1], m_data[loc - 1]);
-      loc = loc * 2 - 1;
+      loc = loc * 2;
     }
     else
     {// both children are worse or do not exist
@@ -170,6 +172,19 @@ void Heap<T, PComparator>::push(const T& item)
     {
       std::swap(m_data[loc - 1], m_data[(loc/2) - 1]);
       loc = loc/2;
+
+      //if another child exists and is better, swap with that child
+      if (loc * 2 < size())
+      {
+          if (m_comp(m_data[loc * 2 - 1], m_data[loc - 1]))
+          {
+              std::swap(m_data[loc - 1], m_data[loc * 2 - 1]);
+          }
+          else if (m_comp(m_data[loc * 2], m_data[loc - 1]))
+          {
+              std::swap(m_data[loc - 1], m_data[loc * 2]);
+          }
+      }
     }
     else{ break; }
   }
