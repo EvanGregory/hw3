@@ -2,6 +2,7 @@
 #define HEAP_H
 #include <functional>
 #include <stdexcept>
+#include <iostream>
 #include "stack.h"
 
 template <typename T, typename PComparator = std::less<T> >
@@ -65,7 +66,46 @@ public:
     return m_data.size();
   }
 
-private:
+  void dump() const
+  {
+      dumpRecurse(0, 0);
+  }
+
+private: 
+
+  int getParent(int index) const
+  {
+      return (index - 1) / m_ary;
+  }
+  
+  int getChild(int index, int whichChild) const
+  {
+    if (whichChild >= 0 && whichChild < m_ary)
+    {
+      return index * m_ary + whichChild + 1;
+    }
+    return -1; // assert!
+  }
+
+  void dumpRecurse(int currentNode, int depth) const
+  {
+      if (currentNode >= size())
+          return;
+      for (int i = 0; i < depth; i++) std::cout << " ";
+      std::cout << currentNode << ":" << m_data[currentNode] << std::endl;
+
+      for (int i = 0; i < m_ary; i++)
+      {
+          std::size_t childNode = getChild(currentNode, i);
+          dumpRecurse(childNode, depth + 1);
+      }
+
+      //for (int i = 1; i < (currentNode + 1) * m_ary; i++)
+      //{
+      //    dumpRecurse((currentNode + 1) * i);
+      //}
+  }
+
   // Add whatever helper functions and data members you need below
   std::vector<T> m_data;
   int m_ary;
@@ -109,25 +149,32 @@ void Heap<T,PComparator>::pop()
   m_data.pop_back();
 
   //trickle new top node down
-  std::size_t loc = 1; // remember to subtract 1 when indexing
+  std::size_t loc = 0;
 
   while (true)
   {
-    std::size_t tempLoc = loc;
-    for (int i = m_ary; i >= 1; i--)
+    int bestInd = -1;
+    for (int i = 0; i < m_ary; i++)
     {
-      std::size_t childInd = tempLoc * i;
-      std::size_t currInd = tempLoc - 1;
+      int childInd = getChild(loc, i);
+      int currInd = loc;
       if (childInd < size() && 
           m_comp(m_data[childInd], m_data[currInd]))
       {
-        std::swap(m_data[childInd], m_data[currInd]);
-        loc = childInd + 1;
+        if (bestInd == -1 || (m_comp(m_data[childInd], m_data[bestInd])))
+        {
+          bestInd = childInd;
+        }
       }
     }
-    if (tempLoc == loc)
+    if (bestInd == -1)
     {
       break;
+    }
+    else
+    {
+      std::swap(m_data[loc], m_data[bestInd]);
+      loc = bestInd;
     }
 
     /*
