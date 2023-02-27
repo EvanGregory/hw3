@@ -90,7 +90,7 @@ Node* llfilter(Node* head, Comp pred)
     }
     if ( !pred(head->val) )
     { //Node should be kept
-        llfilter(head->next, pred);
+        head->next = llfilter(head->next, pred);
         return head;
     }
     else
@@ -99,8 +99,6 @@ Node* llfilter(Node* head, Comp pred)
         delete head;
         return nextNode;
     }
-
-
 }
 
 #endif
