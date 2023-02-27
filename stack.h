@@ -9,8 +9,12 @@ template <typename T>
 class Stack : private std::vector<T>
 {
 public:
-    Stack();
-    ~Stack();
+    Stack()
+    {}
+
+    ~Stack()
+    {}
+    
     bool empty() const
     {
         return std::vector<T>::empty();
@@ -31,7 +35,7 @@ public:
     {
         if (empty()) 
         {
-          throw std::underflow_error();
+          throw std::underflow_error("pop when empty");
         }
         std::vector<T>::pop_back();
     }
@@ -41,7 +45,7 @@ public:
     {
         if (empty()) 
         {
-          throw std::underflow_error();
+          throw std::underflow_error("top when empty");
         }
         return std::vector<T>::back();
     }
