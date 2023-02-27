@@ -176,83 +176,25 @@ void Heap<T,PComparator>::pop()
       std::swap(m_data[loc], m_data[bestInd]);
       loc = bestInd;
     }
-
-    /*
-
-    bool leftExists = ( loc * m_ary - 1 < size() );
-    bool rightExists = ( loc * m_ary < size() );
-
-    //messy logic but it works
-
-    //if current node is weighed better than both children, were done
-    if ( !leftExists || (
-      rightExists 
-        && m_comp(m_data[loc - 1], m_data[loc * m_ary - 1]) 
-        && m_comp(m_data[loc - 1], m_data[loc * m_ary]) ) )
-    {
-      break;
-    }
-    //assert(leftExists);
-
-    //if both children exist and are better
-    if (rightExists && !m_comp(m_data[loc - 1], m_data[loc * m_ary - 1]) && !m_comp(m_data[loc - 1], m_data[loc * m_ary]))
-    {
-      if (m_comp(m_data[loc * m_ary - 1], m_data[loc * m_ary]))
-      {
-        std::swap(m_data[loc * m_ary - 1], m_data[loc - 1]);
-        loc = loc * m_ary;
-      }
-      else
-      {
-        std::swap(m_data[loc * m_ary], m_data[loc - 1]);
-        loc = loc * m_ary + 1;
-      }
-    }
-    else if (rightExists && !m_comp(m_data[loc - 1], m_data[loc * m_ary]))
-    {
-      std::swap(m_data[loc * m_ary], m_data[loc - 1]);
-      loc = loc * m_ary+ 1;
-    }
-    else if (leftExists && !m_comp(m_data[loc - 1], m_data[loc * m_ary - 1]))
-    {
-      std::swap(m_data[loc * m_ary - 1], m_data[loc - 1]);
-      loc = loc * m_ary;
-    }
-    else
-    {// both children are worse or do not exist
-      break;
-    }
-    */
   }
 }
 
 template <typename T, typename PComparator>
 void Heap<T, PComparator>::push(const T& item)
 {
+  std::size_t currInd = m_data.size();
   m_data.push_back(item);
-  std::size_t loc = m_data.size(); // remember to subtract before indexing
 
   //trickle new item up
-  while (loc > 1)
+  while (currInd > 0)
   {
-    if (m_comp(m_data[loc - 1], m_data[(loc/m_ary) - 1]))
+    std::size_t parentInd = getParent(currInd);
+    if (m_comp(m_data[currInd], m_data[parentInd]))
     {
-      std::swap(m_data[loc - 1], m_data[(loc/m_ary) - 1]);
-      loc = loc/m_ary;
-
-      //if another child exists and is better, swap with that child
-      for (int i = m_ary; i >= 1; i--)
-      {
-        if (loc * i < size())
-        {
-          if (m_comp(m_data[loc * i], m_data[loc - 1]))
-          {
-            std::swap(m_data[loc - 1], m_data[loc * i]);
-          }
-        }
-      }
+      std::swap(m_data[currInd], m_data[parentInd]);
+      currInd = parentInd;
     }
-    else{ break; }
+    else break;
   }
 }
 

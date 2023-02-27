@@ -35,7 +35,7 @@ void llpivot(Node* &head, Node* &smaller, Node* &larger, int pivot)
 {
   //remove garbage from smaller and larger
   smaller = nullptr;
-  larger = nulllptr;
+  larger = nullptr;
 
   //call helper
   llpivot_helper(head, smaller, larger, pivot);
